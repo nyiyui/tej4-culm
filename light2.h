@@ -12,9 +12,9 @@
 #define LIGHT_LEN 3
 int light_pins[3]         = { A5, A0, A1 };
 int light_led_pins[3]     = { 12, 10, 11 };
-int light_thresholds[3]   = { 800, 670, 750 };
-int light_uppers[3]       = { 890, 720, 770 };
-int light_lowers[3]       = { 630, 530, 710 };
+int light_thresholds[3]   = { 960, 960, 960 };
+int light_uppers[3]       = { 980, 980, 980 };
+int light_lowers[3]       = { 920, 920, 920 };
 int light_raws[3]         = { 0 };
 bool light_values[3]      = { 0 };
 float light_normalized[3] = { 0 };
@@ -78,3 +78,23 @@ bool light_is(int a, int b, int c) {
 }
 
 // #define light_is(a, b, c) light_values[0] == a && light_values[1] == b && light_values[2] == c
+
+void light_calibration_mode() {
+  while (true) {
+    if (Serial.available()) {
+      int ctl = Serial.read();
+      if (ctl == 'q') {
+        Serial.println("quit");
+        delay(500);
+      }
+    }
+    light_read();
+    Serial.println();
+    // Serial.print(light_raws[0]);
+    // Serial.print(" ");
+    // Serial.print(light_raws[1]);
+    // Serial.print(" ");
+    // Serial.println(light_raws[2]);
+    delay(100);
+  }
+}

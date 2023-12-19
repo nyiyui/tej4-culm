@@ -39,13 +39,32 @@ void setup() {
   Serial.println("[ OK ] pin setup: done");
 }
 
-void loop() {
+void inject() {
   if (Serial.available()) {
     int ctl = Serial.read();
     if (ctl == 'p') {
-      Serial.println("pong");
+      Serial.println("pause");
+      motor_write(0, 0);
+      motor_write(1, 0);
+      while (true) {
+        if (Serial.available()) {
+          int ctl = Serial.read();
+          if (ctl == 'p') {
+            break;
+          }
+        }
+      }
+      Serial.println("resume");
+    } else if (ctl == 'c') {
+      motor_write(0, 0);
+      motor_write(1, 0);
+      light_calibration_mode();
     }
   }
+}
+
+void loop() {
+  inject();
   light_read();
   follow();
   if (light_is(false, false, false)) {
@@ -136,20 +155,21 @@ void follow() {
 }
 
 void turn() {
-  motor_write(0, -motor_coeffLeft*0.5);
-  motor_write(1, motor_coeffRight*0.5);
   while (true) {
-    bool all_white = true;
+    inject();
     light_read();
-    if (all_white && !light_values[0] || !light_values[1] || !light_values[2]) {
-      all_white = false;
-    }
-    if (all_white()) {
+    bool all_white = light_is(true, true, true);
+    if (all_white) {
       motor_write(0, -motor_coeffLeft*0.5);
       motor_write(1, motor_coeffRight*0.5);
+    } else {
+      motor_write(0, 0);
+      motor_write(1, 0);
+      while (true) {}
     }
   delay(1000);
   return;
+  }
 }
 
 void turn_90() {
@@ -158,10 +178,11 @@ void turn_90() {
   delay(200);
   motor_move(1.0);
   while (true) {
+    inject();
     light_read();
     if (light_is(true, false, true)) {
-      motor_write(0, 0.5*motor_coeffLeft);
-      motor_write(1, -0.5*motor_coeffRight);
+      motor_write(0, motor_coeffLeft);
+      motor_write(1, -motor_coeffRight);
     } else if (light_is(false, true, true)) {
       motor_write(0, 0);
       motor_write(1, 0);
