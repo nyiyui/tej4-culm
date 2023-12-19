@@ -1,5 +1,16 @@
+// old in-front-of-axle LEDs
+// #define LIGHT_LEN 3
+// int light_pins[3]         = { A2, A4, A3 };
+// int light_led_pins[3]     = { 12, 10, 11 };
+// int light_thresholds[3]   = { 800, 670, 750 };
+// int light_uppers[3]       = { 890, 720, 770 };
+// int light_lowers[3]       = { 630, 530, 710 };
+// int light_raws[3]         = { 0 };
+// bool light_values[3]      = { 0 };
+// float light_normalized[3] = { 0 };
+
 #define LIGHT_LEN 3
-int light_pins[3]         = { A2, A4, A3 };
+int light_pins[3]         = { A5, A0, A1 };
 int light_led_pins[3]     = { 12, 10, 11 };
 int light_thresholds[3]   = { 800, 670, 750 };
 int light_uppers[3]       = { 890, 720, 770 };
