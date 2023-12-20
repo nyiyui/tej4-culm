@@ -6,6 +6,7 @@ void inject() {
       motor_write(0, 0);
       motor_write(1, 0);
       while (true) {
+        light_read();
         if (Serial.available()) {
           int ctl = Serial.read();
           if (ctl == 'p') {
