@@ -40,5 +40,18 @@ void motor_move(float bias) {
   motor_write(L, left);
   motor_write(R, right);
 }
+
+void motor_move2(float bias, float coeff) {
+  int left = coeff*motor_coeffLeft*bias;
+  int right = coeff*motor_coeffRight*(1-bias);
+  //Serial.print("motor_move ");
+  //Serial.print(bias);
+  //Serial.print(" ");
+  //Serial.print(left);
+  //Serial.print(" ");
+  //Serial.println(right);
+  motor_write(L, left);
+  motor_write(R, right);
+}
 #undef L
 #undef R

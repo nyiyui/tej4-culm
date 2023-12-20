@@ -5,7 +5,7 @@ void simple_follow() {
     static float integral = 0;
 
     // float delta = normalize(light_lowers[0], light_thresholds[0], light_uppers[0], light_raws[0]);
-    float delta = light_normalized[1] - light_normalized[0];
+    float delta = 2*(light_normalized[0]-1) + light_normalized[1] + 2*(light_normalized[2]+1);
     float proportion = delta;
     integral += delta;
     integral *= 0.9;
@@ -30,6 +30,6 @@ void simple_follow() {
     Serial.print(derivative);
     Serial.print(" move ");
     Serial.println(val);
-    motor_move(val);
+    motor_move2(val, 0.5);
   }
 }
