@@ -2,6 +2,8 @@
 #define LED_RIGHT_PIN 11
 #include "light2.h"
 #include "motor.h"
+#include "inject.h"
+#include "simple.h"
 
 // ensure LDR is on lower side of chassis
 void setup() {
@@ -39,30 +41,6 @@ void setup() {
   Serial.println("[ OK ] pin setup: done");
 }
 
-void inject() {
-  if (Serial.available()) {
-    int ctl = Serial.read();
-    if (ctl == 'p') {
-      Serial.println("pause");
-      motor_write(0, 0);
-      motor_write(1, 0);
-      while (true) {
-        if (Serial.available()) {
-          int ctl = Serial.read();
-          if (ctl == 'p') {
-            break;
-          }
-        }
-      }
-      Serial.println("resume");
-    } else if (ctl == 'c') {
-      motor_write(0, 0);
-      motor_write(1, 0);
-      light_calibration_mode();
-    }
-  }
-}
-
 void loop() {
   inject();
   light_read();
@@ -71,7 +49,7 @@ void loop() {
     turn_90();
   }
   if (light_is(true, true, true)) {
-    turn();
+    turn_180();
   }
   return;
   // following the right edge
@@ -154,7 +132,7 @@ void follow() {
   motor_move(val);
 }
 
-void turn() {
+void turn_180() {
   while (true) {
     inject();
     light_read();
