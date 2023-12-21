@@ -44,6 +44,8 @@ void setup() {
 void loop() {
   inject();
   light_read();
+  simple_follow();
+  return;
   follow();
   if (light_is(false, false, false)) {
     turn_90();
