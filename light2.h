@@ -38,19 +38,19 @@ void light_setup() {
 float normalize(float l, float t, float u, float s) {
   // assume l < t < u and l < s < u
   if (s > t) {
-    Serial.print(s);
-    Serial.print(">");
-    Serial.print(t);
+    // Serial.print(s);
+    // Serial.print(">");
+    // Serial.print(t);
     return (s-t)/(u-t);
   }
   if (s == t) {
-    Serial.print("=");
+    // Serial.print("=");
     return 0;
   }
   if (s < t) {
-    Serial.print(s);
-    Serial.print("<");
-    Serial.print(t);
+    // Serial.print(s);
+    // Serial.print("<");
+    // Serial.print(t);
     return (s-l)/(t-l)-1;
   }
 }
@@ -58,10 +58,10 @@ float normalize(float l, float t, float u, float s) {
 void light_read() {
   for (int i = 0; i < LIGHT_LEN; i ++) {
     int raw = analogRead(light_pins[i]);
-    Serial.print(i);
-    Serial.print(" = ");
-    Serial.print(raw);
-    Serial.print(" ; ");
+    // Serial.print(i);
+    // Serial.print(" = ");
+    // Serial.print(raw);
+    // Serial.print(" ; ");
     light_raws[i] = raw;
     light_values[i] = raw >= light_thresholds[i];
     light_normalized[i] = normalize(light_lowers[i], light_thresholds[i], light_uppers[i], light_raws[i]);

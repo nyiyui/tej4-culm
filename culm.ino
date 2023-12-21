@@ -44,9 +44,10 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  simple_follow();
-  return;
+  // simple_follow();
+  // return;
   follow();
+  Serial.println("forward");
   if (light_is(false, false, false)) {
     turn_90();
   }
@@ -119,54 +120,56 @@ void follow() {
   float val = 0.5 - 0.05*proportion - 0*integral - 0.0006*derivative;
   if (val < 0) val = 0;
   if (val > 1.0) val = 1.0;
-  Serial.print(" raw");
-  Serial.print(light_raws[0]);
-  Serial.print(" delta");
-  Serial.print(delta);
-  Serial.print(" p");
-  Serial.print(proportion);
-  Serial.print(" i");
-  Serial.print(integral);
-  Serial.print(" d");
-  Serial.print(derivative);
-  Serial.print(" move ");
-  Serial.println(val);
+  // Serial.print(" raw");
+  // Serial.print(light_raws[0]);
+  // Serial.print(" delta");
+  // Serial.print(delta);
+  // Serial.print(" p");
+  // Serial.print(proportion);
+  // Serial.print(" i");
+  // Serial.print(integral);
+  // Serial.print(" d");
+  // Serial.print(derivative);
+  // Serial.print(" move ");
+  // Serial.println(val);
   motor_move(val);
 }
 
 void turn_180() {
   while (true) {
+    Serial.print("uturn ");
     inject();
     light_read();
     bool all_white = light_is(true, true, true);
+    Serial.println(all_white);
     if (all_white) {
-      motor_write(0, -motor_coeffLeft*0.5);
+      motor_write(0, -motor_coeffLeft*0.6);
       motor_write(1, motor_coeffRight*0.5);
     } else {
       motor_write(0, 0);
       motor_write(1, 0);
-      while (true) {}
+      return;
     }
-  delay(1000);
-  return;
   }
 }
 
 void turn_90() {
   motor_write(0, -motor_coeffLeft);
   motor_write(1, -motor_coeffRight);
-  delay(200);
+  delay(100);
   motor_move(1.0);
   while (true) {
+    Serial.println("turnright");
     inject();
     light_read();
-    if (light_is(true, false, true)) {
+    if (light_is(true, true, true)) {
+      motor_write(0, -motor_coeffLeft);
+      motor_write(1, motor_coeffRight);
+      delay(100);
+      return;
+    } else {
       motor_write(0, motor_coeffLeft);
       motor_write(1, -motor_coeffRight);
-    } else if (light_is(false, true, true)) {
-      motor_write(0, 0);
-      motor_write(1, 0);
-      return;
     }
     delay(10);
   }/*

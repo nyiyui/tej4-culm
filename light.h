@@ -19,9 +19,9 @@ bool light_right = false;
 void light_read() {
   int leftRaw = analogRead(LIGHT_LEFT_PIN);
   int rightRaw = analogRead(LIGHT_RIGHT_PIN);
-  Serial.print("l = ");
-  Serial.print(leftRaw);
-  Serial.print(" ; r = ");
+  // Serial.print("l = ");
+  // Serial.print(leftRaw);
+  // Serial.print(" ; r = ");
   Serial.println(rightRaw);
   light_left = leftRaw >= light_leftThreshold;
   light_right = rightRaw >= light_rightThreshold;
