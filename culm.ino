@@ -153,6 +153,9 @@ void turn_180() {
   }
 }
 
+// Proposed turn_90 algorithm
+// - use the same as u-turn
+// - to detect if we're on a straight line, record the last 100 ms of movement, and see if we're moving more right or light → if the left/right are almost the same, assume we are on straight line and finish
 void turn_90() {
   motor_write(0, -motor_coeffLeft);
   motor_write(1, -motor_coeffRight);
