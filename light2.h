@@ -1,7 +1,6 @@
 // old in-front-of-axle LEDs
 // #define LIGHT_LEN 3
 // int light_pins[3]         = { A2, A4, A3 };
-// int light_led_pins[3]     = { 12, 10, 11 };
 // int light_thresholds[3]   = { 800, 670, 750 };
 // int light_uppers[3]       = { 890, 720, 770 };
 // int light_lowers[3]       = { 630, 530, 710 };
@@ -11,7 +10,6 @@
 
 #define LIGHT_LEN 3
 int light_pins[3]         = { A5, A0, A1 };
-int light_led_pins[3]     = { 12, 10, 11 };
 int light_thresholds[3]   = { 960, 960, 960 };
 int light_uppers[3]       = { 980, 980, 980 };
 int light_lowers[3]       = { 920, 920, 920 };
@@ -31,7 +29,6 @@ float light_normalized[3] = { 0 };
 void light_setup() {
   for (int i = 0; i < LIGHT_LEN; i ++) {
     pinMode(light_pins[i], INPUT);
-    pinMode(light_led_pins[i], OUTPUT);
   }
 }
 
@@ -65,8 +62,14 @@ void light_read() {
     light_raws[i] = raw;
     light_values[i] = raw >= light_thresholds[i];
     light_normalized[i] = normalize(light_lowers[i], light_thresholds[i], light_uppers[i], light_raws[i]);
-    digitalWrite(light_led_pins[i], light_values[i] ? HIGH : LOW);
+    int value = light_normalized[i] * 255;
+    value = abs(value);
+    if (light_values[i])
+      strip.setPixelColor(i+2, 0, value, 0);
+    else
+      strip.setPixelColor(i+2, value, 0, 0);
   }
+  strip.show();
   //Serial.println();
 }
 

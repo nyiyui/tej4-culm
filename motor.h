@@ -10,8 +10,6 @@ struct motor motors[] = {
   { .pin_enable = 5, .pin_a = 6, .pin_b = 7 },
 };
 
-#define READY_LED_PIN 9
-
 void motor_write(int i, int power) {
   if (i == 1) power = -power;
   power = -power;
