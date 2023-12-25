@@ -52,6 +52,7 @@ void loop() {
 }
 
 void follow() {
+  strip.setPixelColor(STATUS_MODE, 255, 0, 0);
   static float integral = 0;
 
   float delta = light_normalized[1] - light_normalized[0];
@@ -81,6 +82,7 @@ void follow() {
 }
 
 void turn_180() {
+  strip.setPixelColor(STATUS_MODE, 0, 255, 0);
   while (true) {
     Serial.print("uturn ");
     inject();
@@ -102,23 +104,34 @@ void turn_180() {
 // - use the same as u-turn
 // - to detect if we're on a straight line, record the last 100 ms of movement, and see if we're moving more right or light → if the left/right are almost the same, assume we are on straight line and finish
 void turn_90() {
-  motor_write(0, -motor_coeffLeft);
-  motor_write(1, -motor_coeffRight);
-  delay(100);
-  motor_move(1.0);
+  strip.setPixelColor(STATUS_MODE, 0, 0, 255);
+  unsigned long latestRight = millis();
   while (true) {
-    Serial.println("turnright");
     inject();
     light_read();
-    if (light_is(true, true, true)) {
-      motor_write(0, -motor_coeffLeft);
-      motor_write(1, motor_coeffRight);
-      delay(100);
-      return;
-    } else {
-      motor_write(0, motor_coeffLeft);
-      motor_write(1, -motor_coeffRight);
+    float delta = light_normalized[2];
+    Serial.print("delta = ");
+    Serial.println(delta);
+    if (delta > 0)
+      strip.setPixelColor(STATUS_SUBMODE, 0, (int) (delta * 255), 0);
+    else if (delta < 0)
+      strip.setPixelColor(STATUS_SUBMODE, (int) (delta * 255), 0, 0);
+    if (delta > 0) { // on white, turn left-ish
+      float power = abs(delta);
+      if (power < 0.5) power = 0.5;
+      motor_write(0, power * 0.9 * motor_coeffLeft);
+      motor_write(1, power * 1.0 * motor_coeffRight);
+      // if this goes on for more than 500ms, then return
+      if (latestRight <= millis() - 500) {
+        return;
+      }
+    } else if (delta <= 0) { // on black, turn right
+      float power = abs(delta);
+      if (power < 0.5) power = 0.5;
+      motor_write(0, power *  0.9 * motor_coeffLeft);
+      motor_write(1, power * -1.0 * motor_coeffRight);
+      latestRight = millis();
     }
-    delay(10);
+    delay(100);
   }
 }
