@@ -4,18 +4,6 @@ void simple_follow() {
     light_read();
     static float integral = 0;
 
-    // float delta = normalize(light_lowers[0], light_thresholds[0], light_uppers[0], light_raws[0]);
-    //float delta = 2*(light_normalized[0]+1) + light_normalized[1] + 2*(light_normalized[2]-1);
-    //float delta = 0;
-    //if (light_is(true, true, true)) {
-    //  delta = -1;
-    //} else if (light_is(false, true, true)) {
-    //  delta = 0;
-    //} else if (light_is(false, false, true)) {
-    //  delta = 1;
-    //} else if (light_is(false, false, false)) {
-    //  delta = 2;
-    //}
     float delta = -2*(light_normalized[0]) + light_normalized[1] + 2*(light_normalized[2]);
     //delta = delta * delta * delta;
     //delta = -1*delta;
