@@ -13,6 +13,11 @@ struct motor motors[] = {
 void motor_write(int i, int power) {
   if (i == 1) power = -power;
   power = -power;
+  Serial.print("motor_write(");
+  Serial.print(i);
+  Serial.print(", ");
+  Serial.print(power);
+  Serial.println(")");
   struct motor m = motors[i];
   // The motor should be either hi-Z or our desired state, never braking
   digitalWrite(m.pin_enable, LOW);
@@ -23,6 +28,9 @@ void motor_write(int i, int power) {
 
 float motor_coeffLeft = 101;
 float motor_coeffRight = 128;
+
+float motor_coeffLeft_normal = motor_coeffLeft / max(motor_coeffLeft, motor_coeffRight) * 255;
+float motor_coeffRight_normal = motor_coeffRight / max(motor_coeffLeft, motor_coeffRight) * 255;
 
 #define L 0
 #define R 1
