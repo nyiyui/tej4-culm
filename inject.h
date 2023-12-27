@@ -1,6 +1,9 @@
-float coeff_proportion = 0.05;
+float coeff_proportion = 0.04;
 float coeff_integral = 0;
-float coeff_derivative = 0.01;
+float coeff_derivative = 0.05;
+//float coeff_proportion = 0.05;
+//float coeff_integral = 0;
+//float coeff_derivative = 0.01;
 float deltaBase = 1.3;
 const float diff = 0.01;
 
@@ -14,12 +17,11 @@ void inject() {
       while (true) {
         light_read();
         float d = get_delta();
-        Serial.print("get_delta = ");
         Serial.println(d);
         if (d > 0)
-          strip.setPixelColor(7, 0, d/2*255, 0);
+          strip.setPixelColor(7, 0, d/3*255, 0);
         else
-          strip.setPixelColor(7, d/2*255, 0, 0);
+          strip.setPixelColor(7, d/3*255, 0, 0);
         if (Serial.available()) {
           int ctl = Serial.read();
           if (ctl == 'p') {

@@ -37,8 +37,8 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  //follow();
   generic();
+  //steps();
   return;
 }
 
@@ -47,39 +47,21 @@ template <typename T> int signum(T val) {
 }
 
 void generic() {
-  float p = coeff_proportion;
-  float delta = get_delta()/(LIGHT_LEN/2);
-  float straight = 0.3;//*(1-delta);
-  motor_move2(p*delta, straight, 1.0);
-  return;
-}
-
-void follow() {
-  const float straightCoeff = 0.3;
-
   static float prev;
-  strip.setPixelColor(STATUS_MODE, 255, 0, 0);
-  static float integral = 0;
+  float p = coeff_proportion;
+  float d = coeff_derivative;
 
-  float delta_raw = get_delta();
-  float delta = signum(delta_raw) * pow(deltaBase, delta_raw) - 1;
-  //float delta = delta_raw;
-  float proportion = delta;
-  integral += delta;
-  integral *= 0.9;
-  float derivative = prev-delta;
-  float dir = coeff_proportion*proportion + coeff_integral*integral + coeff_derivative*derivative;
-  prev = delta;
-  float straight = straightCoeff*(1-delta/2);
-  straight = constrain(straight, 0.2, 1);
-  if (straight < 0.2) straight = 0.2;
-  dir = constrain(dir, -1, 1);
-  Serial.print("delta = ");
+  float delta = get_delta()/(LIGHT_LEN/2);
   Serial.print(delta);
-  Serial.print(" ; straight = ");
-  Serial.print(straight);
-  Serial.print(" ; dir = ");
-  Serial.println(dir);
-  motor_move2(dir, straight, 1.0);
-  delay(100);
+  Serial.print("d");
+  if (abs(delta) > 0.8) {
+    motor_move2(0.2 * delta, -0.3, 1.0);
+    delay(100);
+  } else {
+    float straight = 0.4*(1-abs(delta));
+    straight = constrain(straight, 0.3, 1);
+    motor_move2(p*delta + d*(delta-prev), straight, 1.0);
+  }
+  prev = delta;
+  return;
 }
