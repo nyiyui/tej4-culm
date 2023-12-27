@@ -38,7 +38,6 @@ void loop() {
   inject();
   light_read();
   follow();
-  Serial.println("forward");
   if (light_is(false, false, false)) {
     turn_90();
   }

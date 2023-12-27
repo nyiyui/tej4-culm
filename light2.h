@@ -101,3 +101,47 @@ void light_calibration_mode() {
     delay(100);
   }
 }
+
+float get_delta() {
+  // find right edge of line
+  const int offset = LIGHT_LEN/2;
+  for (int i = LIGHT_LEN-1; i >= 0; i --) {
+    if (light_normalized[i] < 0 || i == 0) {
+      if (i >= LIGHT_LEN) {
+        strip.fill(255, 0, 0);
+        strip.show();
+        Serial.println("bounds overflow 1");
+        while (1) {}
+      }
+      float left = light_normalized[i];
+      float right;
+      if (i == LIGHT_LEN-1) {
+        right = 1.0;
+      } else {
+        if (i+1 >= LIGHT_LEN) {
+          strip.fill(255, 0, 0);
+          strip.show();
+          Serial.println("bounds overflow 2");
+          while (1) {}
+        }
+        right = light_normalized[i+1];
+      }
+      if (left == right) {
+        strip.fill(255, 0, 0);
+        strip.show();
+        delay(100);
+        right += 0.1;
+      }
+      // m = right-left
+      // y-left=mx
+      // find the point where it crosses the x axis
+      // x=-left/m
+      Serial.print("i = "); Serial.print(i);
+      Serial.print(" ; left = "); Serial.print(left);
+      Serial.print(" ; right = "); Serial.print(right);
+      Serial.print(" ; -left/(right-left) = "); Serial.print(-left/(right-left));
+      Serial.print(" ; ");
+      return -left/(right-left) + i - offset;
+    }
+  }
+}
