@@ -38,46 +38,96 @@ void loop() {
   inject();
   light_read();
   follow();
+  if (light_is(false, false, false)) {
+    turn_90();
+  }
+  if (light_is(true, true, true)) {
+    turn_180();
+  }
   return;
 }
 
-template <typename T> int signum(T val) {
-    return (T(0) < val) - (val < T(0));
-}
-
 void follow() {
-  const float straightCoeff = 0.3;
-
-  static float prev;
   strip.setPixelColor(STATUS_MODE, 255, 0, 0);
   static float integral = 0;
 
-  float delta_raw = get_delta();
-  float delta = signum(delta_raw) * pow(deltaBase, delta_raw) - 1;
-  //float delta = delta_raw;
+  float delta = light_normalized[1] - light_normalized[0];
   float proportion = delta;
   integral += delta;
   integral *= 0.9;
+  static float prev = delta;
   float derivative = prev-delta;
-  float dir = coeff_proportion*proportion + coeff_integral*integral + coeff_derivative*derivative;
-  prev = delta;
-  float straight = straightCoeff*(1-delta/2);
-  straight = constrain(straight, 0.2, 1);
-  if (straight < 0.2) straight = 0.2;
-  if (light_is(false, false, false)) {
-    dir = 0.8;
-    straight = 0;
-    motor_move2(dir, straight, 1.0);
-    delay(200);
-    return;
+  // https://www.reddit.com/r/Unity3D/comments/exw4ux/please_help_with_pid_controller_bouncing_back_and/
+  //float val = 0.5 - 0.09*proportion - 0*integral - 0.01*derivative;
+  float val = 0.5 - 0.05*proportion - 0*integral - 0.0006*derivative;
+  if (val < 0) val = 0;
+  if (val > 1.0) val = 1.0;
+  // Serial.print(" raw");
+  // Serial.print(light_raws[0]);
+  // Serial.print(" delta");
+  // Serial.print(delta);
+  // Serial.print(" p");
+  // Serial.print(proportion);
+  // Serial.print(" i");
+  // Serial.print(integral);
+  // Serial.print(" d");
+  // Serial.print(derivative);
+  // Serial.print(" move ");
+  // Serial.println(val);
+  motor_move(val);
+}
+
+void turn_180() {
+  strip.setPixelColor(STATUS_MODE, 0, 255, 0);
+  while (true) {
+    Serial.print("uturn ");
+    inject();
+    light_read();
+    bool all_white = light_is(true, true, true);
+    Serial.println(all_white);
+    if (all_white) {
+      motor_write(0, -motor_coeffLeft*0.6);
+      motor_write(1, motor_coeffRight*0.5);
+    } else {
+      motor_write(0, 0);
+      motor_write(1, 0);
+      return;
+    }
   }
-  dir = constrain(dir, -1, 1);
-  Serial.print("delta = ");
-  Serial.print(delta);
-  Serial.print(" ; straight = ");
-  Serial.print(straight);
-  Serial.print(" ; dir = ");
-  Serial.println(dir);
-  motor_move2(dir, straight, 1.0);
-  delay(100);
+}
+
+// Proposed turn_90 algorithm
+// - use the same as u-turn
+// - to detect if we're on a straight line, record the last 100 ms of movement, and see if we're moving more right or light → if the left/right are almost the same, assume we are on straight line and finish
+void turn_90() {
+  strip.setPixelColor(STATUS_MODE, 0, 0, 255);
+  unsigned long latestRight = millis();
+  while (true) {
+    inject();
+    light_read();
+    float delta = light_normalized[2];
+    Serial.print("delta = ");
+    Serial.println(delta);
+    if (delta > 0)
+      strip.setPixelColor(STATUS_SUBMODE, 0, (int) (delta * 255), 0);
+    else if (delta < 0)
+      strip.setPixelColor(STATUS_SUBMODE, (int) (delta * 255), 0, 0);
+    if (delta > 0) { // on white, turn left-ish
+      float power = abs(delta);
+      if (power < 0.5) power = 0.5;
+      motor_write(0, power * 0.9 * motor_coeffLeft);
+      motor_write(1, power * 1.0 * motor_coeffRight);
+      // if this goes on for more than 500ms, then return
+      if (latestRight <= millis() - 500) {
+        return;
+      }
+    } else if (delta <= 0) { // on black, turn right
+      float power = abs(delta);
+      if (power < 0.5) power = 0.5;
+      motor_write(0, power *  0.9 * motor_coeffLeft);
+      motor_write(1, power * -1.0 * motor_coeffRight);
+      latestRight = millis();
+    }
+    delay(100);
+  }
 }

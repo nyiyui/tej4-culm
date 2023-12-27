@@ -106,7 +106,7 @@ float get_delta() {
   // find right edge of line
   const int offset = LIGHT_LEN/2;
   for (int i = LIGHT_LEN-1; i >= 0; i --) {
-    if (light_normalized[i] < 0) {
+    if (light_normalized[i] < 0 || i == 0) {
       if (i >= LIGHT_LEN) {
         strip.fill(255, 0, 0);
         strip.show();
@@ -130,20 +130,18 @@ float get_delta() {
         strip.fill(255, 0, 0);
         strip.show();
         delay(100);
-        Serial.println("compensate");
         right += 0.1;
       }
       // m = right-left
       // y-left=mx
       // find the point where it crosses the x axis
       // x=-left/m
-      // Serial.print("i = "); Serial.print(i);
-      // Serial.print(" ; left = "); Serial.print(left);
-      // Serial.print(" ; right = "); Serial.print(right);
-      // Serial.print(" ; -left/(right-left) = "); Serial.print(-left/(right-left));
-      // Serial.print(" ; ");
+      Serial.print("i = "); Serial.print(i);
+      Serial.print(" ; left = "); Serial.print(left);
+      Serial.print(" ; right = "); Serial.print(right);
+      Serial.print(" ; -left/(right-left) = "); Serial.print(-left/(right-left));
+      Serial.print(" ; ");
       return -left/(right-left) + i - offset;
     }
   }
-  return -offset;
 }
