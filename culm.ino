@@ -8,11 +8,7 @@
 void setup() {
   status_setup();
   Serial.begin(9600);
-  strip.fill(255, 255, 255);
-  strip.show();
-  delay(1000);
-  strip.fill(0, 255, 0);
-  strip.show();
+  while (!Serial) delay(10);
   Serial.println("mizuki v0.1");
 
   Serial.print("Using ");
@@ -45,6 +41,7 @@ void loop() {
   // simple_follow();
   // return;
   follow();
+  Serial.println("forward");
   if (light_is(false, false, false)) {
     turn_90();
   }
@@ -86,37 +83,26 @@ void follow() {
 
 void turn_180() {
   strip.setPixelColor(STATUS_MODE, 0, 255, 0);
-  unsigned long latestRight = millis();
   while (true) {
+    Serial.print("uturn ");
     inject();
     light_read();
-    float delta = light_normalized[2];
-    Serial.print("delta = ");
-    Serial.println(delta);
-    if (delta > 0)
-      strip.setPixelColor(STATUS_SUBMODE, 0, (int) (delta * 255), 0);
-    else if (delta < 0)
-      strip.setPixelColor(STATUS_SUBMODE, (int) (delta * 255), 0, 0);
-    if (delta > 0) { // on white, turn left-ish
-      float power = abs(delta);
-      if (power < 0.5) power = 0.5;
-      motor_write(0, power * -0.4 * motor_coeffLeft_normal);
-      motor_write(1, power *  1.0 * motor_coeffRight_normal);
-      // if this goes on for more than 500ms, then return
-      if (latestRight <= millis() - 500) {
-        return;
-      }
-    } else if (delta <= 0) { // on black, turn right
-      float power = abs(delta);
-      if (power < 0.5) power = 0.5;
-      motor_write(0, power *  0.4 * motor_coeffLeft_normal);
-      motor_write(1, power * -1.0 * motor_coeffRight_normal);
-      latestRight = millis();
+    bool all_white = light_is(true, true, true);
+    Serial.println(all_white);
+    if (all_white) {
+      motor_write(0, -motor_coeffLeft*0.6);
+      motor_write(1, motor_coeffRight*0.5);
+    } else {
+      motor_write(0, 0);
+      motor_write(1, 0);
+      return;
     }
-    delay(100);
   }
 }
 
+// Proposed turn_90 algorithm
+// - use the same as u-turn
+// - to detect if we're on a straight line, record the last 100 ms of movement, and see if we're moving more right or light → if the left/right are almost the same, assume we are on straight line and finish
 void turn_90() {
   strip.setPixelColor(STATUS_MODE, 0, 0, 255);
   unsigned long latestRight = millis();
