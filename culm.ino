@@ -2,7 +2,6 @@
 #include "light2.h"
 #include "motor.h"
 #include "inject.h"
-#include "simple.h"
 
 // ensure LDR is on lower side of chassis
 void setup() {
@@ -38,8 +37,6 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  // simple_follow();
-  // return;
   follow();
   Serial.println("forward");
   if (light_is(false, false, false)) {
