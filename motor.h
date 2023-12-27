@@ -24,6 +24,9 @@ void motor_write(int i, int power) {
 float motor_coeffLeft = 101;
 float motor_coeffRight = 128;
 
+float motor_coeffLeft_normal = motor_coeffLeft*255/max(motor_coeffLeft, motor_coeffRight);
+float motor_coeffRight_normal = motor_coeffRight*255/max(motor_coeffLeft, motor_coeffRight);
+
 #define L 0
 #define R 1
 void motor_move(float bias) {
@@ -39,18 +42,26 @@ void motor_move(float bias) {
   motor_write(R, right);
 }
 
-void motor_move2(float bias, float coeff) {
-  // bias is [-1, 1] (0 = straight)
-  int left = (bias > 0) ? 1 : 1+2*bias;
-  int right = (bias < 0) ? 1 : 1-2*bias;
-//  Serial.print("motor_move ");
-//  Serial.print(bias);
-//  Serial.print(" ");
-//  Serial.print(left);
-//  Serial.print(" ");
-//  Serial.println(right);
-  motor_write(L, coeff*motor_coeffLeft*left);
-  motor_write(R, coeff*motor_coeffRight*right);
+void motor_move2(float dir, float straight, float coeff) {
+  // dir is [-1, 1] (0 = straight)
+  float left = dir + straight*(1-abs(dir));
+  float right = -dir + straight*(1-abs(dir));
+  // Serial.print(dir);
+  // Serial.print("dir ; ");
+  // Serial.print(abs(dir));
+  // Serial.print("abs ; ");
+  // Serial.print(1-abs(dir));
+  // Serial.print("s ; ");
+  // Serial.print(dir+1-abs(dir));
+  // Serial.print("l ; ");
+  // Serial.print(-dir+1-abs(dir));
+  // Serial.print("r ; ");
+  // Serial.print(left);
+  // Serial.print(" ; ");
+  // Serial.print(right);
+  // Serial.print(" ; ");
+  motor_write(L, coeff*motor_coeffLeft_normal*left);
+  motor_write(R, coeff*motor_coeffRight_normal*right);
 }
 #undef L
 #undef R
