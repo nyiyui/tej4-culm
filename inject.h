@@ -1,7 +1,8 @@
-float coeff_proportion = 0.1;
+float coeff_proportion = 0.05;
 float coeff_integral = 0;
-float coeff_derivative = 0.3;
+float coeff_derivative = 0.01;
 float deltaBase = 1.3;
+const float diff = 0.01;
 
 void inject() {
   if (Serial.available()) {
@@ -28,27 +29,27 @@ void inject() {
             motor_write(1, 0);
             light_calibration_mode();
           } else if (ctl == 'R') {
-            coeff_proportion += 0.1;
+            coeff_proportion += diff;
             Serial.print("coeff_proportion = ");
             Serial.println(coeff_proportion);
           } else if (ctl == 'r') {
-            coeff_proportion -= 0.1;
+            coeff_proportion -= diff;
             Serial.print("coeff_proportion = ");
             Serial.println(coeff_proportion);
           } else if (ctl == 'I') {
-            coeff_integral += 0.1;
+            coeff_integral += diff;
             Serial.print("coeff_integral = ");
             Serial.println(coeff_integral);
           } else if (ctl == 'i') {
-            coeff_integral -= 0.1;
+            coeff_integral -= diff;
             Serial.print("coeff_integral = ");
             Serial.println(coeff_integral);
           } else if (ctl == 'D') {
-            coeff_derivative += 0.1;
+            coeff_derivative += diff;
             Serial.print("coeff_derivative = ");
             Serial.println(coeff_derivative);
           } else if (ctl == 'd') {
-            coeff_derivative -= 0.1;
+            coeff_derivative -= diff;
             Serial.print("coeff_derivative = ");
             Serial.println(coeff_derivative);
           }
@@ -60,35 +61,35 @@ void inject() {
       motor_write(1, 0);
       light_calibration_mode();
     } else if (ctl == 'R') {
-      coeff_proportion += 0.1;
+      coeff_proportion += diff;
       Serial.print("coeff_proportion = ");
       Serial.println(coeff_proportion);
     } else if (ctl == 'r') {
-      coeff_proportion -= 0.1;
+      coeff_proportion -= diff;
       Serial.print("coeff_proportion = ");
       Serial.println(coeff_proportion);
     } else if (ctl == 'I') {
-      coeff_integral += 0.1;
+      coeff_integral += diff;
       Serial.print("coeff_integral = ");
       Serial.println(coeff_integral);
     } else if (ctl == 'i') {
-      coeff_integral -= 0.1;
+      coeff_integral -= diff;
       Serial.print("coeff_integral = ");
       Serial.println(coeff_integral);
     } else if (ctl == 'D') {
-      coeff_derivative += 0.1;
+      coeff_derivative += diff;
       Serial.print("coeff_derivative = ");
       Serial.println(coeff_derivative);
     } else if (ctl == 'd') {
-      coeff_derivative -= 0.1;
+      coeff_derivative -= diff;
       Serial.print("coeff_derivative = ");
       Serial.println(coeff_derivative);
     } else if (ctl == 'P') {
-      deltaBase += 0.1;
+      deltaBase += diff;
       Serial.print("deltaBase = ");
       Serial.println(deltaBase);
     } else if (ctl == 'p') {
-      deltaBase -= 0.1;
+      deltaBase -= diff;
       Serial.print("deltaBase = ");
       Serial.println(deltaBase);
     }

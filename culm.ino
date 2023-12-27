@@ -37,12 +37,21 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  follow();
+  //follow();
+  generic();
   return;
 }
 
 template <typename T> int signum(T val) {
-    return (T(0) < val) - (val < T(0));
+  return (T(0) < val) - (val < T(0));
+}
+
+void generic() {
+  float p = coeff_proportion;
+  float delta = get_delta()/(LIGHT_LEN/2);
+  float straight = 0.3;//*(1-delta);
+  motor_move2(p*delta, straight, 1.0);
+  return;
 }
 
 void follow() {
@@ -64,13 +73,6 @@ void follow() {
   float straight = straightCoeff*(1-delta/2);
   straight = constrain(straight, 0.2, 1);
   if (straight < 0.2) straight = 0.2;
-  if (light_is(false, false, false)) {
-    dir = 0.8;
-    straight = 0;
-    motor_move2(dir, straight, 1.0);
-    delay(200);
-    return;
-  }
   dir = constrain(dir, -1, 1);
   Serial.print("delta = ");
   Serial.print(delta);
