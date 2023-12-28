@@ -37,8 +37,8 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  //generic();
-  steps();
+  generic();
+  //steps();
   return;
 }
 
