@@ -37,8 +37,8 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  generic();
-  //steps();
+  //generic();
+  steps();
   return;
 }
 
@@ -47,21 +47,62 @@ template <typename T> int signum(T val) {
 }
 
 void generic() {
+  strip.setPixelColor(STATUS_MODE, 0, 0, 255);
   static float prev;
-  float p = coeff_proportion;
   float d = coeff_derivative;
 
   float delta = get_delta()/(LIGHT_LEN/2);
+  if (abs(delta) > 0.9) {
+    steps();
+  }
   Serial.print(delta);
   Serial.print("d");
-  if (abs(delta) > 0.8) {
-    motor_move2(0.2 * delta, -0.3, 1.0);
-    delay(100);
-  } else {
-    float straight = 0.4*(1-abs(delta));
-    straight = constrain(straight, 0.3, 1);
-    motor_move2(p*delta + d*(delta-prev), straight, 1.0);
-  }
+  float p = pow(1.46, abs(delta)) - 0.96;
+  float straight = pow(0.516698, abs(delta)*abs(delta)) - 0.554843;
+  motor_move2(p*delta + d*(delta-prev), straight, 1.0);
   prev = delta;
   return;
+}
+
+void steps() {
+  strip.setPixelColor(STATUS_MODE, 255, 255, 255);
+  strip.show();
+  float deltaInitial = light_normalized[2];
+  float history = abs(deltaInitial);
+  motor_move2(0, -0.5, 1.0);
+  while (abs(get_delta()) > 0.9) {
+    Serial.println(get_delta());
+    inject();
+    light_read();
+  }
+  motor_move2(0, 0.1, 0);
+  delay(10);
+  motor_move2(0, 0, 0);
+  while (true) {
+    Serial.println(history);
+    {
+      float brightness = 255*abs(history);
+      strip.setPixelColor(STATUS_SUBMODE, brightness, brightness, brightness);
+      strip.show();
+    }
+    inject();
+    light_read();
+    float delta = get_delta()/(LIGHT_LEN/2);
+    float dir = abs(0.4*delta);
+    dir = signum(delta) * constrain(dir, 0.4, 1);
+    float straight;
+    if (delta > 0) { // right
+      straight = 0.05;
+    } else { // left
+      straight = 0.05;
+    }
+    motor_move2(dir, straight, 1.0);
+    history = 0.9*history + 0.1*abs(delta);
+    if (abs(history) < 0.1) {
+      motor_move2(0, 0, 0);
+      delay(2000);
+      return;
+    }
+    delay(100);
+  }
 }

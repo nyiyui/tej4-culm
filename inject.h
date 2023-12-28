@@ -54,6 +54,16 @@ void inject() {
             coeff_derivative -= diff;
             Serial.print("coeff_derivative = ");
             Serial.println(coeff_derivative);
+          } else if (ctl == 'h') {
+            motor_move2(-0.3, 0, 1.0);
+          } else if (ctl == 'j') {
+            motor_move2(0, -0.3, 1.0);
+          } else if (ctl == 'k') {
+            motor_move2(0, 0.3, 1.0);
+          } else if (ctl == 'l') {
+            motor_move2(0.3, 0, 1.0);
+          } else if (ctl == 's') {
+            motor_move2(0, 0, 1.0);
           }
         }
       }

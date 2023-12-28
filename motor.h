@@ -22,7 +22,7 @@ void motor_write(int i, int power) {
 }
 
 float motor_coeffLeft = 101;
-float motor_coeffRight = 155;
+float motor_coeffRight = 140;
 
 float motor_coeffLeft_normal = motor_coeffLeft*255/max(motor_coeffLeft, motor_coeffRight);
 float motor_coeffRight_normal = motor_coeffRight*255/max(motor_coeffLeft, motor_coeffRight);
