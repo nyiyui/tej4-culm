@@ -14,11 +14,17 @@ void motor_write(int i, int power) {
   if (i == 1) power = -power;
   power = -power;
   struct motor m = motors[i];
-  // The motor should be either hi-Z or our desired state, never braking
-  digitalWrite(m.pin_enable, LOW);
-  digitalWrite(m.pin_a, power > 0);
-  digitalWrite(m.pin_b, power < 0);
-  analogWrite(m.pin_enable, abs(power));
+  if (power == 0) {
+    digitalWrite(m.pin_enable, LOW);
+    digitalWrite(m.pin_a, LOW);
+    digitalWrite(m.pin_b, LOW);
+    digitalWrite(m.pin_enable, HIGH);
+  } else {
+    digitalWrite(m.pin_enable, LOW);
+    digitalWrite(m.pin_a, power > 0);
+    digitalWrite(m.pin_b, power < 0);
+    analogWrite(m.pin_enable, abs(power));
+  }
 }
 
 float motor_coeffLeft = 101;
