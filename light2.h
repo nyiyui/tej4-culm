@@ -8,14 +8,14 @@
 // bool light_values[3]      = { 0 };
 // float light_normalized[3] = { 0 };
 
-#define LIGHT_LEN 5
-int light_pins[5]         = { A4,  A3,  A2,  A1  };
-int light_thresholds[5]   = { 960, 960, 960, 960 };
-int light_uppers[5]       = { 950, 950, 950, 950 };
-int light_lowers[5]       = { 940, 930, 940, 930 };
-int light_raws[5]         = { 0 };
-bool light_values[5]      = { 0 };
-float light_normalized[5] = { 0 };
+#define LIGHT_LEN 4
+int light_pins[4]         = { A4,  A3,  A2,  A1  };
+int light_thresholds[4]   = { 960, 960, 960, 960 };
+int light_uppers[4]       = { 950, 950, 950, 950 };
+int light_lowers[4]       = { 940, 940, 940, 930 };
+int light_raws[4]         = { 0 };
+bool light_values[4]      = { 0 };
+float light_normalized[4] = { 0 };
 
 // left
 //   blank = 550

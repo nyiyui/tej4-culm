@@ -37,8 +37,8 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  generic();
-  //steps();
+  //generic();
+  steps();
   return;
 }
 
@@ -100,20 +100,13 @@ void steps() {
     inject();
     light_read();
     float delta = get_delta()/(LIGHT_LEN/2);
-    float dir = abs(0.4*delta);
-    dir = signum(delta) * constrain(dir, 0.4, 1);
-    float straight;
-    if (delta > 0) { // right
-      straight = 0.05;
-    } else { // left
-      straight = 0.05;
-    }
+    float dir = 0.4*delta;
+    float straight = -0.167*abs(delta)*abs(delta) - 0.183*abs(delta) + 0.4;
     motor_move2(dir, straight, 1.0);
     history = 0.9*history + 0.1*abs(delta);
     if (abs(history) < 0.1) {
       motor_move2(0, 0, 0);
       return;
     }
-    delay(100);
   }
 }
