@@ -90,6 +90,7 @@ void steps() {
   motor_move2(0, 0.1, 0);
   delay(10);
   motor_move2(0, 0, 0);
+  float prev = deltaInitial;
   while (true) {
     Serial.println(history);
     {
@@ -100,13 +101,15 @@ void steps() {
     inject();
     light_read();
     float delta = get_delta()/(LIGHT_LEN/2);
-    float dir = 0.4*delta;
+    float dir = 0.4*delta + 0.05*(delta-prev);
     float straight = -0.167*abs(delta)*abs(delta) - 0.183*abs(delta) + 0.4;
+    straight = abs(straight);
     motor_move2(dir, straight, 1.0);
     history = 0.9*history + 0.1*abs(delta);
     if (abs(history) < 0.1) {
       motor_move2(0, 0, 0);
       return;
     }
+    prev = delta;
   }
 }
