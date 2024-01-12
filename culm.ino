@@ -37,8 +37,8 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  generic();
-  //steps();
+  //generic();
+  steps();
   return;
 }
 
@@ -52,23 +52,17 @@ void generic() {
   float d = coeff_derivative;
 
   float delta = get_delta()/(LIGHT_LEN/2);
-  // if (abs(delta) >= 1) {
-  //   steps();
-  // }
+  if (abs(delta) >= 1) {
+    steps();
+  }
   Serial.print(" ");
   Serial.print(delta);
-  Serial.print("d ");
+  Serial.print("d");
   float p = pow(1.4, abs(delta)) - 0.9;
   //float straight = pow(0.516698, abs(delta)*abs(delta)) - 0.554843;
   float derivative = delta-prev;
-  //float straight = pow(0.00000154966, abs(delta)*abs(delta)); // no worky
-  float straight = pow(0.154, abs(delta)*abs(delta));
-  Serial.print(straight);
-  Serial.print("s ");
-  float dir = 0.1*delta + d*(delta-prev);
-  if (abs(delta) > 0.3) {
-    steps();
-  }
+  float straight = pow(0.00000154966, abs(delta)*abs(delta));
+  float dir = p*delta + d*(delta-prev);
   const float cumMin = 0.3;
   if (abs(straight) + abs(dir) < cumMin) {
     if (abs(straight) > abs(dir)) {
@@ -83,21 +77,19 @@ void generic() {
 }
 
 void steps() {
-  strip.setPixelColor(STATUS_MODE, 0, 255, 0);
+  strip.setPixelColor(STATUS_MODE, 255, 255, 255);
   strip.show();
   float deltaInitial = light_normalized[2];
   float history = abs(deltaInitial);
-  // not used
-  //while (abs(get_delta()/(LIGHT_LEN/2)) > 0.9) {
-  //  motor_move2(0, -0.5, 1.0);
-  //  Serial.println(get_delta());
-  //  inject();
-  //  light_read();
-  //}
-  //motor_move2(0, 0.1, 0);
-  //delay(10);
-  //motor_move2(0, 0, 0);
-  // end not used
+  while (abs(get_delta()/(LIGHT_LEN/2)) > 0.9) {
+    motor_move2(0, -0.5, 1.0);
+    Serial.println(get_delta());
+    inject();
+    light_read();
+  }
+  motor_move2(0, 0.1, 0);
+  delay(10);
+  motor_move2(0, 0, 0);
   float prev = deltaInitial;
   while (true) {
     Serial.println(history);
@@ -110,11 +102,10 @@ void steps() {
     light_read();
     float delta = get_delta()/(LIGHT_LEN/2);
     float dir = 0.4*delta + 0.05*(delta-prev);
-    float straight = -0.167*abs(delta)*abs(delta) - 0.183*abs(delta) + 0.4; // works
-    // float straight = pow(2, -abs(delta)*abs(delta)*abs(delta))-0.5; // exponential, fails to catch right angle
+    float straight = -0.167*abs(delta)*abs(delta) - 0.183*abs(delta) + 0.4;
     straight = abs(straight);
     motor_move2(dir, straight, 1.0);
-    history = 0.9*history + 0.1*delta;
+    history = 0.9*history + 0.1*abs(delta);
     if (abs(history) < 0.1) {
       motor_move2(0, 0, 0);
       return;
