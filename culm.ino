@@ -37,8 +37,8 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  //generic();
-  steps();
+  generic();
+  //steps();
   return;
 }
 
@@ -52,7 +52,7 @@ void generic() {
   float d = coeff_derivative;
 
   float delta = get_delta()/(LIGHT_LEN/2);
-  if (abs(delta) >= 1) {
+  if (abs(delta) >= 1 || abs(delta-prev) > 0.5) {
     steps();
   }
   Serial.print(" ");
@@ -81,15 +81,6 @@ void steps() {
   strip.show();
   float deltaInitial = light_normalized[2];
   float history = abs(deltaInitial);
-  while (abs(get_delta()/(LIGHT_LEN/2)) > 0.9) {
-    motor_move2(0, -0.5, 1.0);
-    Serial.println(get_delta());
-    inject();
-    light_read();
-  }
-  motor_move2(0, 0.1, 0);
-  delay(10);
-  motor_move2(0, 0, 0);
   float prev = deltaInitial;
   while (true) {
     Serial.println(history);
@@ -103,10 +94,11 @@ void steps() {
     float delta = get_delta()/(LIGHT_LEN/2);
     float dir = 0.4*delta + 0.05*(delta-prev);
     float straight = -0.167*abs(delta)*abs(delta) - 0.183*abs(delta) + 0.4;
+    straight *= 1.5;
     straight = abs(straight);
     motor_move2(dir, straight, 1.0);
-    history = 0.9*history + 0.1*abs(delta);
-    if (abs(history) < 0.1) {
+    history = 0.9*history + 0.1*(delta);
+    if (abs(history) < 0.2) {
       motor_move2(0, 0, 0);
       return;
     }
