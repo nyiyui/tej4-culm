@@ -37,13 +37,30 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  generic();
+  halation();
+  //generic();
   //steps();
   return;
 }
 
 template <typename T> int signum(T val) {
   return (T(0) < val) - (val < T(0));
+}
+
+void halation() {
+  strip.setPixelColor(STATUS_MODE, 255, 0, 0);
+  static float prev;
+
+  float delta = get_delta()/(LIGHT_LEN/2);
+  Serial.print(" ");
+  Serial.print(delta);
+  Serial.print("d");
+  float derivative = delta-prev;
+  float dir = 0.4*(0.3*delta*delta*delta + delta);
+  float straight = 0.6*(0.8-abs(delta));
+  motor_move2(dir, straight, 1.0);
+  prev = delta;
+  return;
 }
 
 void generic() {
