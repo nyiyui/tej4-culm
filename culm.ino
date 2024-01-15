@@ -37,8 +37,8 @@ void setup() {
 void loop() {
   inject();
   light_read();
-  halation();
-  //generic();
+  //halation();
+  generic();
   //steps();
   return;
 }
@@ -47,6 +47,7 @@ template <typename T> int signum(T val) {
   return (T(0) < val) - (val < T(0));
 }
 
+/*
 void halation() {
   strip.setPixelColor(STATUS_MODE, 255, 0, 0);
   static float prev;
@@ -55,13 +56,19 @@ void halation() {
   Serial.print(" ");
   Serial.print(delta);
   Serial.print("d");
+  Serial.print(" ");
+  Serial.print(delta-prev);
+  Serial.print("deriv");
   float derivative = delta-prev;
-  float dir = 0.4*(0.3*delta*delta*delta + delta);
-  float straight = 0.6*(0.8-abs(delta));
+  float dir = 0.5*delta;
+  float dd = abs(delta);// max(abs(delta), 10*abs(derivative));
+  float straight = -1.33*dd*dd+0.947;
   motor_move2(dir, straight, 1.0);
   prev = delta;
+  delay(10);
   return;
 }
+*/
 
 void generic() {
   strip.setPixelColor(STATUS_MODE, 0, 0, 255);
@@ -69,27 +76,26 @@ void generic() {
   float d = coeff_derivative;
 
   float delta = get_delta()/(LIGHT_LEN/2);
-  if (abs(delta) >= 1 || abs(delta-prev) > 0.5) {
+  /*
+  if (abs(delta) >= 1) {
+    motor_move2(0, -1.0, 1.0);
+    delay(10);
+  }
+  if (abs(delta) >= 1) {
     steps();
   }
+  */
   Serial.print(" ");
   Serial.print(delta);
   Serial.print("d");
-  float p = pow(1.4, abs(delta)) - 0.9;
-  //float straight = pow(0.516698, abs(delta)*abs(delta)) - 0.554843;
   float derivative = delta-prev;
-  float straight = pow(0.00000154966, abs(delta)*abs(delta));
-  float dir = p*delta + d*(delta-prev);
-  const float cumMin = 0.3;
-  if (abs(straight) + abs(dir) < cumMin) {
-    if (abs(straight) > abs(dir)) {
-      straight = constrain(straight, cumMin, 1);
-    } else {
-      dir = constrain(dir, cumMin, 1);
-    }
-  }
+  float dir = 0.2*(1.5*delta*delta*delta+delta);
+  dir = constrain(dir, -1, 1);
+  float straight = 0.7*(0.7-abs(delta));
+  straight = max(0, straight);
   motor_move2(dir, straight, 1.0);
   prev = delta;
+  delay(50);
   return;
 }
 
