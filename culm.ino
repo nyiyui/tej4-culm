@@ -89,9 +89,9 @@ void generic() {
   //Serial.print(delta);
   //Serial.print("d");
   float derivative = delta-prev;
-  float dir = 0.35*(delta*delta*delta+delta)+0.1*derivative;
+  float dir = 0.34*(delta*delta*delta+delta)+0.1*derivative;
   dir = constrain(dir, -1, 1);
-  float straight = 0.8*(0.7-abs(delta));
+  float straight = 0.85*(0.7-abs(delta));
   straight = max(0, straight);
   motor_move2(dir, straight, 1.0);
   prev = delta;
