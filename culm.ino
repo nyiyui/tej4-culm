@@ -89,7 +89,7 @@ void generic() {
   Serial.print(delta);
   Serial.print("d");
   float derivative = delta-prev;
-  float dir = 0.2*(1.5*delta*delta*delta+delta);
+  float dir = 0.3*(delta*delta*delta+delta);
   dir = constrain(dir, -1, 1);
   float straight = 0.7*(0.7-abs(delta));
   straight = max(0, straight);
