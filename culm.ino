@@ -76,44 +76,30 @@ void generic() {
   float d = coeff_derivative;
 
   float delta = get_delta()/(LIGHT_LEN/2);
+  /*
+  if (abs(delta) >= 1) {
+    motor_move2(0, -1.0, 1.0);
+    delay(10);
+  }
   if (abs(delta) >= 1) {
     steps();
   }
+  */
   Serial.print(" ");
   Serial.print(delta);
   Serial.print("d");
   float derivative = delta-prev;
-  float dir = 0.1*(3*delta*delta*delta*delta*delta+delta);
+  float dir = 0.2*(1.5*delta*delta*delta+delta);
   dir = constrain(dir, -1, 1);
-  float straight = 0.8*(0.8-abs(delta));
-  if (abs(delta) < 0.8) {
-    straight = max(0.2, straight);
-  } else {
-    straight = 0;
-  }
+  float straight = 0.7*(0.7-abs(delta));
+  straight = max(0, straight);
   motor_move2(dir, straight, 1.0);
   prev = delta;
-  delay(100);
+  delay(50);
   return;
 }
 
 void steps() {
-  strip.setPixelColor(STATUS_MODE, 255, 0, 0);
-  strip.show();
-  motor_move2(0, -0.5, 1.0);
-  while (true) {
-    float m = min(light_normalized[0], light_normalized[1]);
-    m = min(m, light_normalized[2]);
-    m = min(m, light_normalized[3]);
-    if (m < -0.5) {
-      break;
-    }
-    inject();
-    light_read();
-  }
-  delay(100);
-  motor_move2(0, 1, 1.0);
-
   strip.setPixelColor(STATUS_MODE, 255, 255, 255);
   strip.show();
   float deltaInitial = light_normalized[2];
@@ -133,9 +119,9 @@ void steps() {
     float straight = -0.167*abs(delta)*abs(delta) - 0.183*abs(delta) + 0.4;
     straight *= 1.5;
     straight = abs(straight);
-    motor_move2(dir, 0.5*straight, 1.0);
+    motor_move2(dir, straight, 1.0);
     history = 0.9*history + 0.1*(delta);
-    if (abs(history) < 0.16) {
+    if (abs(history) < 0.2) {
       motor_move2(0, 0, 0);
       return;
     }
