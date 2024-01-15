@@ -20,7 +20,6 @@ void motor_write(int i, int power) {
     digitalWrite(m.pin_b, LOW);
     digitalWrite(m.pin_enable, HIGH);
   } else {
-    digitalWrite(m.pin_enable, LOW);
     digitalWrite(m.pin_a, power > 0);
     digitalWrite(m.pin_b, power < 0);
     analogWrite(m.pin_enable, abs(power));
@@ -44,12 +43,12 @@ void motor_move(float bias) {
 
 void motor_move2(float dir, float straight, float coeff) {
   // dir is [-1, 1] (0 = straight)
-  Serial.print("motor_move2 ");
-  Serial.print(dir);
-  Serial.print(" ");
-  Serial.print(straight);
-  Serial.print(" ");
-  Serial.println(coeff);
+  //Serial.print("motor_move2 ");
+  //Serial.print(dir);
+  //Serial.print(" ");
+  //Serial.print(straight);
+  //Serial.print(" ");
+  //Serial.println(coeff);
   float left = dir + straight*(1-abs(dir));
   float right = -dir + straight*(1-abs(dir));
   motor_write(L, coeff*motor_coeffLeft_normal*left);

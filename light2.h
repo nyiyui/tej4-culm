@@ -108,9 +108,9 @@ void light_calibration_mode() {
 float get_delta() {
   // find right edge of line
   const int offset = LIGHT_LEN/2;
-  for (int i = 0; i < LIGHT_LEN; i ++) {
-    Serial.print(light_values[i]);
-  }
+  //for (int i = 0; i < LIGHT_LEN; i ++) {
+  //  Serial.print(light_values[i]);
+  //}
   for (int i = LIGHT_LEN-1; i >= 0; i --) {
     if (!light_values[i]) {
       if (i >= LIGHT_LEN) {
