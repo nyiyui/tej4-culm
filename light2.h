@@ -4,16 +4,6 @@
  * Date: 2024-01-16
  * Teacher: Mr. Wong
  */
-// old in-front-of-axle LEDs
-// #define LIGHT_LEN 3
-// int light_pins[3]         = { A2, A4, A3 };
-// int light_thresholds[3]   = { 800, 670, 750 };
-// int light_uppers[3]       = { 890, 720, 770 };
-// int light_lowers[3]       = { 630, 530, 710 };
-// int light_raws[3]         = { 0 };
-// bool light_values[3]      = { 0 };
-// float light_normalized[3] = { 0 };
-
 #define LIGHT_LEN 4
 int light_pins[4]         = { A4,  A3,  A2,  A1  };
 int light_thresholds[4]   = { 960, 960, 960, 960 };
@@ -23,15 +13,6 @@ int light_raws[4]         = { 0 };
 bool light_values[4]      = { 0 };
 float light_normalized[4] = { 0 };
 
-// left
-//   blank = 550
-//   black = 840
-//   white pla-board = 900
-// right
-//   blank = 490
-//   black = 750
-//   white pla-board = 900
-
 void light_setup() {
   for (int i = 0; i < LIGHT_LEN; i ++) {
     pinMode(light_pins[i], INPUT);
@@ -40,22 +21,12 @@ void light_setup() {
 
 float normalize(float l, float t, float u, float s) {
   // assume l < t < u and l < s < u
-  if (s > t) {
-    // Serial.print(s);
-    // Serial.print(">");
-    // Serial.print(t);
+  if (s > t)
     return (s-t)/(u-t);
-  }
-  if (s == t) {
-    // Serial.print("=");
+  if (s == t)
     return 0;
-  }
-  if (s < t) {
-    // Serial.print(s);
-    // Serial.print("<");
-    // Serial.print(t);
+  if (s < t)
     return (s-l)/(t-l)-1;
-  }
 }
 
 void light_read() {
@@ -78,15 +49,6 @@ void light_read() {
   strip.show();
   //Serial.println();
 }
-
-bool light_is(int a, int b, int c) {
-  if (light_values[0] != a && a != -1) return false;
-  if (light_values[1] != b && b != -1) return false;
-  if (light_values[2] != c && c != -1) return false;
-  return true;
-}
-
-// #define light_is(a, b, c) light_values[0] == a && light_values[1] == b && light_values[2] == c
 
 void light_calibration_mode() {
   while (true) {
