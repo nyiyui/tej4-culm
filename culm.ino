@@ -47,10 +47,11 @@ void generic() {
 
   float delta = get_delta()/(LIGHT_LEN/2);
   float derivative = delta-prev;
-  float dir = 0.35*(0.93*delta*delta*delta+delta)+0.1*derivative;
+  float dir = 0.35*(1.1*delta*delta*delta+delta)+0.1*derivative;
   dir = constrain(dir, -1, 1);
   float straight = 0.9*(0.7-abs(delta));
   straight = max(0, straight);
+  straight = min(0.8, straight);
   motor_move2(dir, straight, 1.0);
   prev = delta;
   delay(40);
