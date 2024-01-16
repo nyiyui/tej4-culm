@@ -40,21 +40,7 @@ float motor_coeffRight_normal = motor_coeffRight*255/max(motor_coeffLeft, motor_
 
 #define L 0
 #define R 1
-void motor_move(float bias) {
-  int left = motor_coeffLeft*bias;
-  int right = motor_coeffRight*(1-bias);
-  motor_write(L, left);
-  motor_write(R, right);
-}
-
 void motor_move2(float dir, float straight, float coeff) {
-  // dir is [-1, 1] (0 = straight)
-  //Serial.print("motor_move2 ");
-  //Serial.print(dir);
-  //Serial.print(" ");
-  //Serial.print(straight);
-  //Serial.print(" ");
-  //Serial.println(coeff);
   float left = dir + straight*(1-abs(dir));
   float right = -dir + straight*(1-abs(dir));
   motor_write(L, coeff*motor_coeffLeft_normal*left);
