@@ -1,9 +1,17 @@
+/*
+ * culm.ino contains the main algorithm controlling the robot.
+ * Ken Shibata
+ * Date: 2024-01-16
+ * Teacher: Mr. Wong
+ */
 #include "status.h"
 #include "light2.h"
 #include "motor.h"
 #include "inject.h"
 
 // ensure LDR is on lower side of chassis
+
+// setup() sets up the various sensors and modules.
 void setup() {
   status_setup();
   Serial.begin(9600);
@@ -34,6 +42,7 @@ void setup() {
   Serial.println("[ OK ] pin setup: done");
 }
 
+// loop() calls generic() and other helper functions.
 void loop() {
   inject();
   light_read();
@@ -41,6 +50,7 @@ void loop() {
   return;
 }
 
+// generic() is a generic algorithm to follow the line.
 void generic() {
   strip.setPixelColor(STATUS_MODE, 0, 0, 255);
   static float prev;

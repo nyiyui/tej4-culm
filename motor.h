@@ -4,6 +4,8 @@
  * Date: 2024-01-16
  * Teacher: Mr. Wong
  */
+
+// struct motor configures a single motor.
 struct motor {
   int pin_enable;
   int pin_a;
@@ -16,6 +18,7 @@ struct motor motors[] = {
   { .pin_enable = 5, .pin_a = 6, .pin_b = 7 },
 };
 
+// motor_write() sets the signal for a single motor.
 void motor_write(int i, int power) {
   if (i == 1) power = -power;
   power = -power;
@@ -35,11 +38,13 @@ void motor_write(int i, int power) {
 float motor_coeffLeft = 101;
 float motor_coeffRight = 140;
 
+// motor_coeff*_normal is a normaliezd coefficient for the motors.
 float motor_coeffLeft_normal = motor_coeffLeft*255/max(motor_coeffLeft, motor_coeffRight);
 float motor_coeffRight_normal = motor_coeffRight*255/max(motor_coeffLeft, motor_coeffRight);
 
 #define L 0
 #define R 1
+// motor_move2() sets the signal for both motors by the straight and dir (direction) components. coeff affects all components equally.
 void motor_move2(float dir, float straight, float coeff) {
   float left = dir + straight*(1-abs(dir));
   float right = -dir + straight*(1-abs(dir));

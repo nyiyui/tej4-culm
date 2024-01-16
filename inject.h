@@ -7,6 +7,7 @@
 float deltaBase = 1.3;
 const float diff = 0.01;
 
+// inject() allows pausing the robot during operation by pressing the p key in the Serial Monitor in the Arduino IDE.
 void inject() {
   if (Serial.available()) {
     int ctl = Serial.read();
