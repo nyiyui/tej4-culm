@@ -4,7 +4,6 @@
  * Date: 2024-01-16
  * Teacher: Mr. Wong
  */
-float coeff_derivative = 0.05;
 float deltaBase = 1.3;
 const float diff = 0.01;
 
@@ -32,14 +31,6 @@ void inject() {
             motor_write(0, 0);
             motor_write(1, 0);
             light_calibration_mode();
-          } else if (ctl == 'D') {
-            coeff_derivative += diff;
-            Serial.print("coeff_derivative = ");
-            Serial.println(coeff_derivative);
-          } else if (ctl == 'd') {
-            coeff_derivative -= diff;
-            Serial.print("coeff_derivative = ");
-            Serial.println(coeff_derivative);
           } else if (ctl == 'h') {
             motor_move2(-0.3, 0, 1.0);
           } else if (ctl == 'j') {

@@ -1,3 +1,9 @@
+/*
+ * light2.h contains a hardware abstraction layer (HAL) for the light sensor. It allows to easily interface with the light sensor.
+ * Ken Shibata
+ * Date: 2024-01-16
+ * Teacher: Mr. Wong
+ */
 // old in-front-of-axle LEDs
 // #define LIGHT_LEN 3
 // int light_pins[3]         = { A2, A4, A3 };

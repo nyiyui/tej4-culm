@@ -73,7 +73,6 @@ void halation() {
 void generic() {
   strip.setPixelColor(STATUS_MODE, 0, 0, 255);
   static float prev;
-  float d = coeff_derivative;
 
   float delta = get_delta()/(LIGHT_LEN/2);
   /*

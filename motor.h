@@ -1,3 +1,9 @@
+/*
+ * motor.h contains a hardware abstraction layer (HAL) for the motor. It allows to easily interface with the motor.
+ * Ken Shibata
+ * Date: 2024-01-16
+ * Teacher: Mr. Wong
+ */
 struct motor {
   int pin_enable;
   int pin_a;
