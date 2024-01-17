@@ -35,10 +35,11 @@ void motor_write(int i, int power) {
   }
 }
 
+// motor_coeff* is a non-normalized coefficient for the motors, ensuring straight (enough) movement.
 float motor_coeffLeft = 101;
 float motor_coeffRight = 140;
 
-// motor_coeff*_normal is a normaliezd coefficient for the motors.
+// motor_coeff*_normal is a normalized coefficient for the motors.
 float motor_coeffLeft_normal = motor_coeffLeft*255/max(motor_coeffLeft, motor_coeffRight);
 float motor_coeffRight_normal = motor_coeffRight*255/max(motor_coeffLeft, motor_coeffRight);
 
