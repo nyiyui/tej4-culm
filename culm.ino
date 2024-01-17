@@ -51,6 +51,10 @@ void loop() {
 }
 
 // generic() is a generic algorithm to follow the line.
+// 1. Detect where the line is (e.g. left of centre of robot).
+// 2. Compute rotation/turning component ("dir") and straight movement component ("straight") in terms of the line.
+// 3. Do PD (remove integral of PID) control on the dir value.
+// 4. Send components (control values) to motor.
 void generic() {
   strip.setPixelColor(STATUS_MODE, 0, 0, 255);
   static float prev;
